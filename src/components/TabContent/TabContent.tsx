@@ -1,42 +1,17 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { Tab } from '../../types/Tab';
-import '../../App.scss';
+import { useParams } from 'react-router-dom';
+import { useTabs } from '../TabsContext/TabsContext';
 
-type Props = {
-  tabs: Tab[];
-  activeTabID: string;
-};
-
-export const TabContent: React.FC<Props> = ({ tabs, activeTabID }) => {
-  const activeTab = tabs.find(tab => tab.id === activeTabID);
+export const TabContent = () => {
+  const { tabId } = useParams();
+  const tabs = useTabs();
+  const activeTab = tabs.find(tab => tab.id === tabId);
+  const activeTabContent = activeTab
+    ? activeTab.content
+    : 'Please select a tab';
 
   return (
-    <>
-      <div className="tabs is-boxed">
-        <ul>
-          {tabs.map(tab => (
-            <li
-              className={tab.id === activeTabID ? 'is-active' : ''}
-              data-cy="Tab"
-              key={tab.id}
-            >
-              <Link to={`/tabs/${tab.id}`} data-cy="TabLink">
-                {tab.title}
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </div>
-      {activeTab ? (
-        <div className="block" data-cy="TabContent">
-          {activeTab.content}
-        </div>
-      ) : (
-        <div className="block" data-cy="TabContent">
-          Please select a tab
-        </div>
-      )}
-    </>
+    <div className="block" data-cy="TabContent">
+      {activeTabContent}
+    </div>
   );
 };
